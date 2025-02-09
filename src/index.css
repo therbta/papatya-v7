@@ -109,11 +109,17 @@ body {
 .chats {
   flex-grow: 1;
   height: calc(100% - 25px);
-  overflow-y: auto !important;
+  overflow-y: auto !important; /* Enables scrolling */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
 }
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto; /* Pushes messages to bottom initially */
+}
+
 
 .chat-item {
   margin-top: -4px
@@ -186,7 +192,7 @@ body {
 .selected {
   border: dotted 1px #c26f29;
   background-color: #4f94f3;
-  color: #fff;
+  color: #fff !important
 }
 
 
