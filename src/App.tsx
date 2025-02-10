@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import React from 'react';
 
 // UI
 import { Splitter } from 'antd';
 
 // Consts
-import { nicknames, op_colors, DEFAULT_CHANNELS } from './const';
+import { DEFAULT_CHANNELS, config } from './const';
 
 // Assets
 import Background from './assets/arka.jpg';
 
 import SideBg from './assets/yan.jpg';
+import BarIcon from './assets/bar.png';
 import ChannelItemIcon from './assets/channel_icon.png';
 import ListItemIcon from './assets/list_icon.png';
 
@@ -20,10 +21,13 @@ import Console from './view/Console';
 
 // Audio
 import Intro from './assets/sound/yavuzcetin.wav';
+import ConnectedWAV from './assets/sound/papatyaconnect.wav';
+import JoinedWAV from './assets/sound/papatyajoin.wav';
 
-const myNick = 'bLueStar';
-const script_name = 'PAPATYA';
-const script_version = 'v7';
+
+// Lazy-loaded components
+const List = React.lazy(() => import('./view/List'));
+const ChatInput = React.lazy(() => import('./view/ChatInput'));
 
 // ==============================================================================================
 
@@ -31,93 +35,138 @@ const script_version = 'v7';
 const App = () => {
 
   // States
-  const [selected, setSelected] = useState<number | null>(null);
-  const [channels, setChannels] = useState<string[]>(DEFAULT_CHANNELS);
-  const [chatUsers, setChatUsers] = useState<string[]>([]);
+  const [connected, setConnected] = React.useState(false);
+  const [activeWindow, setActiveWindow] = React.useState<string | null>(null);
+  const [selected, setSelected] = React.useState<number | null>(null);
+  const [channels, setChannels] = React.useState<string[]>(DEFAULT_CHANNELS);
+  const [chatUsers, setChatUsers] = React.useState<string[]>([]);
+
+
+  React.useEffect(() => {
+
+    setTimeout(() => {
+
+      setConnected(true);
+      setActiveWindow(`#${DEFAULT_CHANNELS[0]}`);
+
+      // Play connected sound
+      const audio = new Audio(ConnectedWAV);
+      audio.play();
+
+    }, 3000);
+
+  }, []);
 
   return (
     <div>
 
-      <audio id="audio" src={Intro} />
+      <audio id="audio" src={Intro} autoPlay loop={false} />
 
       <MenuBar />
-      <Toolbar />
+      <Toolbar
+        connected={connected}
+        setConnected={setConnected}
+      />
 
       <div className="main">
 
         <Splitter>
 
-          <Splitter.Panel className="chat-window">
+          <Splitter.Panel className="chat-window" style={{ width: `calc(100% - 400px)` }}>
             <div className="chat-container">
               <div className="chats">
-                <Console />
+                <Console
+                  activeWindow={activeWindow}
+                  connected={connected}
+                />
               </div>
             </div>
           </Splitter.Panel>
 
 
-          <Splitter.Panel min={150} max={400} defaultSize={215} className="list">
+          {/* List */}
+          <Splitter.Panel
+            min={150}
+            max={400}
+            defaultSize={215}
+            className="list"
+            style={{ backgroundColor: (!connected || !activeWindow) ? '#f5f5f5' : '#ccc' }}
+          >
+            <React.Suspense fallback={null}>
+              <List
+                hideComponent={!connected || !activeWindow}
+                selected={selected}
+                setSelected={setSelected}
+                chatUsers={chatUsers}
+                setChatUsers={setChatUsers}
+              />
+            </React.Suspense>
+          </Splitter.Panel>
 
-            {nicknames.map((item, index) => {
 
-              const { nick, op } = item;
-              const color = op_colors.find((opItem) => opItem.sign === op)?.color;
+
+          {/* Channels */}
+          <Splitter.Panel
+            min={100}
+            max={200}
+            defaultSize={100}
+            className="channels"
+            style={{
+              backgroundImage: `url(${SideBg})`,
+              backgroundSize: 'cover',
+            }}
+          >
+
+            {/* Console */}
+            <div
+              className={`channel-item ${!activeWindow ? 'active' : ''}`}
+              onClick={() => setActiveWindow(null)}
+            >
+              <img src={BarIcon} className='channel-icon' />
+              <span className="channel-text">
+                {config.server_name}
+              </span>
+            </div>
+
+            {/* Channels */}
+            {connected && channels.map((channel, index) => {
 
               return (
                 <div
                   key={index}
-                  style={{ color }}
-                  className={`nick-item ${selected === index ? 'selected' : ''}`}
-                  onClick={() => setSelected(index)}
-                  onDoubleClick={() => {
-
-                    if (chatUsers.includes(nick)) {
-                    } else {
-                      setChatUsers([...chatUsers, nick]);
-                    }
-
-                  }}
+                  className={`channel-item ${activeWindow === `#${channel}` ? 'active' : ''}`}
+                  onClick={() => setActiveWindow(`#${channel}`)}
                 >
-                  {op}{nick}
+                  <img src={ChannelItemIcon} className='channel-icon' />
+                  <span className="channel-text">
+                    {channel}
+                  </span>
                 </div>
               )
-            })
-            }
+            })}
+
+            {/* Users */}
+            {chatUsers.map((user, index) => (
+              <div key={index} className="channel-item">
+                <img src={ListItemIcon} className='channel-icon' />
+                <span className="channel-text">
+                  {user}
+                </span>
+              </div>
+            ))}
+
+
 
           </Splitter.Panel>
         </Splitter>
 
 
-        <div className="channels" style={{ backgroundImage: `url(${SideBg})` }}>
-
-          {channels.map((channel, index) => (
-            <div key={index} className="channel-item">
-              <img src={ChannelItemIcon} className='channel-icon' />
-              <span className="channel-text">
-                {channel}
-              </span>
-            </div>
-          ))}
-
-          {chatUsers.map((user, index) => (
-            <div key={index} className="channel-item">
-              <img src={ListItemIcon} className='channel-icon' />
-              <span className="channel-text">
-                {user}
-              </span>
-            </div>
-          ))}
-
-        </div>
-
-
       </div> {/* Main */}
 
 
-      <div className="chat-input">
-        <input type="text" id="chat-input" autoComplete='off' autoCorrect='off' autoCapitalize='off' />
-      </div>
-
+      <React.Suspense fallback={null}>
+        <ChatInput />
+      </React.Suspense>
 
     </div>
   );

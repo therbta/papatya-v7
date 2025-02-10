@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Fixedsys';
+  src: url('./assets/fonts/Fixedsys.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 body {
   margin: 0;
   padding: 0;
@@ -11,9 +19,8 @@ body {
 }
 
 .bar {
-  letter-spacing: -0.05em;
   font-family: "Fixedsys", "Terminal", "Px437 IBM VGA 8x16", monospace !important;
-  font-size: 11px;
+  font-size: 14px;
   display: flex;
   flex-direction: row;
   line-height: 20px;
@@ -89,7 +96,6 @@ body {
 
 
 .chat-window {
-  width: calc(100% - 215px);
   height: calc(100vh - 85px);
   border-right: 1px solid #A6A6A6;
   background-color: #F5F5F5;
@@ -136,12 +142,20 @@ body {
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
-  background-color: #ccc;
   font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
+.usersCover {
+  position: absolute;
+  width: 300px;
+  height: calc(100% - 83px);
+  background-color: #F5F5F5;
+  top: 58px;
+  right: 100px;
+  z-index: 1000;
+}
 
 .channels {
   width: 100px;
@@ -152,12 +166,10 @@ body {
 }
 
 
-.channel-item {
+.channels .channel-item {
   padding: 3px 5px;
   cursor: pointer;
   width: 100%;
-  font-weight: 500;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   background-color: #f5f5f5;
   border-left: solid 1px #fff;
@@ -171,6 +183,14 @@ body {
   justify-content: flex-start;
   align-items: center;
 
+}
+
+.channels .active {
+  border-left: solid 1px #a6a6a6;
+  border-top: solid 1px #a6a6a6;
+  border-right: solid 2px #fff;
+  border-bottom: solid 2px #fff;
+  font-weight: bold;
 }
 
 .channel-text {

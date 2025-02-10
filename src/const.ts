@@ -3,6 +3,8 @@ export const config = {
   root_nick: 'bLueStar',
   script_name: 'PAPATYA',
   script_version: 'v7',
+  server_name: 'SiberTR IRC Network',
+  server: 'irc.sibertr.net',
 }
 
 export const bar = [
@@ -16,6 +18,15 @@ export const bar = [
 ];
 
 export const DEFAULT_CHANNELS = ['str_chat', 'PAPATYA', 'WebCam', 'Radyo', 'mIRCHane'];
+
+export const opPriority: Record<string, number> = {
+  "~": 1,
+  "&": 2,
+  "@": 3,
+  "%": 4,
+  "+": 5,
+  "": 6,
+};
 
 export const op_colors = [
   { sign: "~", color: "green" },

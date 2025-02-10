@@ -1,11 +1,28 @@
-import React, { JSX } from 'react'
+import React from 'react'
 
 // Consts
-import { chats, config, formatDate } from '../const';
+import { config, formatDate } from '../const';
+
+// Components
+const Channel = React.lazy(() => import('./Channel'));
+const Peer = React.lazy(() => import('./Peer'));
+
+// ==============================================================================================
+
+interface ConsoleProps {
+  activeWindow: string | null;
+  connected: boolean;
+}
 
 
-const Console: React.FC = () => {
+const Console = (props: ConsoleProps) => {
 
+  // Props
+  const { activeWindow, connected } = props;
+
+  // Refs
+  const chatContainerRef = React.useRef<HTMLDivElement>(null);
+  const userScrolledUp = React.useRef(false);
 
   // Opening:
   const badge = <div className='flex items-center'>
@@ -28,37 +45,6 @@ const Console: React.FC = () => {
     <div className='flex items-center mb-1.5'> {dashes} Kısayol (F) tuşlarını öğrenmek için <span className="primary px-1">F12</span> tuşuna basınız. </div>,
   ];
 
-  const [displayedChats, setDisplayedChats] = React.useState<typeof chats>([]);
-  const chatContainerRef = React.useRef<HTMLDivElement>(null);
-  const userScrolledUp = React.useRef(false);
-
-  React.useEffect(() => {
-    let delay = 100; // Quick debug delay
-    let isMounted = true;
-
-    chats.forEach((chat: any) => {
-      setTimeout(() => {
-        if (isMounted) {
-          setDisplayedChats((prevChats) =>
-            prevChats.some(c => c.time === chat.time && c.user === chat.user)
-              ? prevChats
-              : [...prevChats, { ...chat, time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) }]
-          );
-
-          if (chatContainerRef.current && !userScrolledUp.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-          }
-        }
-      }, delay);
-
-      delay += Math.random() * 1000 + 300;
-
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
 
   // Detects if user manually scrolls up
@@ -69,69 +55,36 @@ const Console: React.FC = () => {
     }
   };
 
-  const Chats = () => {
+  const ConsoleView = () => {
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-        <div style={{ marginTop: "auto" }}>
-          {displayedChats.map((chat, index) => {
-            const { time, event, message, user, new_nick, email, channel } = chat;
-
-            let row: JSX.Element | null = null;
-
-            if (event === "login") {
-              row = (
-                <span style={{ color: "#129393" }}>
-                  *** Giriş: {user} ({email}) {channel}
-                </span>
-              );
-            } else if (event === "chat") {
-              row = (
-                <span>
-                  <span className="font-medium" style={{ color: "#7e0505" }}>
-                    {`<${user}>`}
-                  </span>
-                  : {message}
-                </span>
-              );
-            } else if (event === "quit") {
-              row = (
-                <span style={{ color: "#000b7d" }}>
-                  *** Çıkış: {user} ({email})
-                </span>
-              );
-            } else if (event === "nick_change") {
-              row = (
-                <span className="font-medium" style={{ color: "#189213" }}>
-                  * {user} nickini {new_nick} olarak değiştirdi.
-                </span>
-              );
-            }
-
-            return (
-              <div key={index} className="chat-item">
-                <span className="chat-time font-medium pe-1">[{time}]</span>
-                {row}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <React.Fragment>
+        {opening.map((item, index) => (
+          <div key={index}>{item}</div>
+        ))}
+      </React.Fragment>
     );
-
-  };
+  }
 
   return (
     <div className="chats" ref={chatContainerRef} onScroll={handleScroll}>
       <div className="chat-content">
-        {opening.map((item, index) => (
-          <div key={index}>{item}</div>
-        ))}
-        <Chats />
+
+        {activeWindow === null && <ConsoleView />}
+        {activeWindow &&
+          <React.Suspense fallback={null}>
+            <Channel
+              connected={connected}
+              chatContainerRef={chatContainerRef}
+              userScrolledUp={userScrolledUp}
+            />
+          </React.Suspense>
+        }
+
       </div>
     </div>
   );
 
 };
 
-export default Console;
+export default React.memo(Console);

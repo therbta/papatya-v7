@@ -23,9 +23,21 @@ import Icon15 from '../assets/imgs/15.png';
 import Icon16 from '../assets/imgs/16.png';
 import Icon17 from '../assets/imgs/17.png';
 import Icon18 from '../assets/imgs/18.png';
+import DisconnectedIcon from '../assets/imgs/disconnected.png';
 
 
-const Toolbar = () => {
+// Audio
+import ConnectedWAV from '../assets/sound/papatyaconnect.wav';
+import DisconnectedWAV from '../assets/sound/papatyadisconnect.wav';
+
+// ==============================================================================================
+
+const Toolbar = (props: any) => {
+
+  // Props;
+  const { connected, setConnected } = props;
+
+
   return (
     <div
       className="toolbar"
@@ -38,10 +50,22 @@ const Toolbar = () => {
       <div className="toolbar-icons">
         {/* Bar icons */}
         {[Icon1, Icon2, Icon3, Icon4, Icon5, Icon6, Icon7, Icon8, Icon9, Icon10, Icon11, Icon12, Icon13, Icon14, Icon15, Icon16, Icon17, Icon18].map((icon, index) => (
-          <span className="toolbar-item">
+          <span
+            className="toolbar-item"
+            key={index}
+            onClick={() => {
+              if (icon === Icon1) {
+                const audio = new Audio(connected ? DisconnectedWAV : ConnectedWAV);
+                audio.play();
+                setConnected(!connected);
+              }
+            }}
+          >
             <img
-              key={index}
-              src={icon}
+              src={icon === Icon1 ?
+                connected ? icon : DisconnectedIcon
+                : icon
+              }
               alt={`Icon ${index + 1}`}
             />
           </span>
