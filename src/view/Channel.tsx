@@ -1,59 +1,48 @@
 import React, { JSX } from 'react'
 
-// Consts
-import { chats } from '../const';
-
 type Props = {
   connected: boolean;
   chatContainerRef: React.RefObject<HTMLDivElement | null>;
   userScrolledUp: React.RefObject<boolean>;
+  currentUser?: string;
+  channelName: string;
+  channelChatData: Array<any>;
+  setChannelChatData?: React.Dispatch<React.SetStateAction<Record<string, Array<any>>>>;
+  channelLoadingComplete: boolean;
+  setChannelLoadingComplete?: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  onNicknameClick?: (nickname: string) => void;
+  onNicknameSelect?: (nickname: string) => void;
 }
 
 const Channel = (props: Props) => {
 
   // Props:
-  const { connected, chatContainerRef, userScrolledUp } = props;
+  const { connected, chatContainerRef, userScrolledUp, currentUser, channelName, channelChatData, channelLoadingComplete, onNicknameClick, onNicknameSelect } = props;
 
-  // States
-  const [displayedChats, setDisplayedChats] = React.useState<typeof chats>([]);
+  // Use channel-specific chat data
+  const displayedChats = channelChatData;
 
-  // Effects
+  // Auto-scroll when new messages arrive
   React.useEffect(() => {
-
-    let delay = 100;
-    let isMounted = true;
-
-    if (connected) {
-      chats.forEach((chat: any) => {
-        setTimeout(() => {
-          if (isMounted) {
-            setDisplayedChats((prevChats) =>
-              prevChats.some(c => c.time === chat.time && c.user === chat.user)
-                ? prevChats
-                : [...prevChats, { ...chat, time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) }]
-            )
-            if (chatContainerRef.current && !userScrolledUp.current) {
-              chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            }
-          }
-        }, delay);
-        delay += Math.random() * 1000 + 300;
-      });
+    if (chatContainerRef.current && !userScrolledUp.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
+  }, [displayedChats.length, chatContainerRef, userScrolledUp]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [connected]);
 
+  // Use displayed chats directly (no merging needed - messages are already in channelChatData)
+  const allMessages = React.useMemo(() => {
+    return displayedChats;
+  }, [displayedChats]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
       <div style={{ marginTop: "auto" }}>
 
-        {displayedChats.map((chat, index) => {
+        {allMessages.map((chat, index) => {
 
           const { time, event, message, user, new_nick, email, channel } = chat;
+          const isCurrentUser = currentUser && user === currentUser;
 
           let row: JSX.Element | null = null;
 
@@ -61,7 +50,26 @@ const Channel = (props: Props) => {
 
             row = (
               <span style={{ color: "#129393" }}>
-                *** Giriş: {user} ({email}) {channel}
+                *** Giriş: <span
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    fontWeight: "normal"
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onNicknameSelect?.(user);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onNicknameClick?.(user);
+                  }}
+                  title="Click to select, double-click to open chat"
+                >
+                  {user}
+                </span> ({email}) {channel}
               </span>
             );
 
@@ -69,7 +77,23 @@ const Channel = (props: Props) => {
 
             row = (
               <span>
-                <span className="font-medium" style={{ color: "#7e0505" }}>
+                <span
+                  className="clickable-nickname"
+                  style={{
+                    color: isCurrentUser ? "#0066cc" : "#7e0505",
+                    fontWeight: "normal",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    fontSize: "14px"
+                  }}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Nickname double-clicked:', user);
+                    onNicknameClick?.(user);
+                  }}
+                  title="Double-click to open private chat"
+                >
                   {`<${user}>`}
                 </span>
                 : {message}
@@ -95,8 +119,11 @@ const Channel = (props: Props) => {
           }
 
           return (
-            <div key={index} className="chat-item">
-              <span className="chat-time font-medium pe-1">[{time}]</span>
+            <div
+              key={`${index}-${user}-${time}`}
+              className="chat-item"
+            >
+              <span className="chat-time pe-1">[{time}]</span>
               {row}
             </div>
           );

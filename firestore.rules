@@ -1,0 +1,150 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    function isModerator(channelId) {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/channels/$(channelId)).data.moderators
+          .hasAny([request.auth.uid]) ||
+        isAdmin()
+      );
+    }
+    
+    function isChannelMember(channelId) {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/channels/$(channelId)).data.users
+          .hasAny([request.auth.uid]);
+    }
+    
+    function isValidUser(userData) {
+      return userData.keys().hasAll(['nickname', 'status', 'lastSeen']) &&
+        userData.nickname is string &&
+        userData.status in ['online', 'away', 'busy', 'invisible'] &&
+        userData.lastSeen is timestamp;
+    }
+    
+    function isValidMessage(messageData) {
+      return messageData.keys().hasAll(['channelId', 'userId', 'nickname', 'message', 'timestamp', 'messageType']) &&
+        messageData.channelId is string &&
+        messageData.userId is string &&
+        messageData.nickname is string &&
+        messageData.message is string &&
+        messageData.timestamp is timestamp &&
+        messageData.messageType in ['chat', 'system', 'join', 'part', 'quit', 'nick_change', 'kick', 'ban'];
+    }
+    
+    function isValidChannel(channelData) {
+      return channelData.keys().hasAll(['name', 'isPrivate', 'createdAt', 'createdBy']) &&
+        channelData.name is string &&
+        channelData.isPrivate is bool &&
+        channelData.createdAt is timestamp &&
+        channelData.createdBy is string;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+        isOwner(userId) && 
+        isValidUser(request.resource.data);
+      allow update: if isAuthenticated() && 
+        isOwner(userId) && 
+        isValidUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Channels collection
+    match /channels/{channelId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+        isOwner(request.resource.data.createdBy) && 
+        isValidChannel(request.resource.data);
+      allow update: if isAuthenticated() && (
+        isOwner(resource.data.createdBy) ||
+        isModerator(channelId)
+      );
+      allow delete: if isAuthenticated() && (
+        isOwner(resource.data.createdBy) ||
+        isAdmin()
+      );
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() && isChannelMember(resource.data.channelId);
+      allow create: if isAuthenticated() && 
+        isOwner(request.resource.data.userId) && 
+        isValidMessage(request.resource.data) &&
+        isChannelMember(request.resource.data.channelId);
+      allow update: if isAuthenticated() && (
+        isOwner(resource.data.userId) ||
+        isModerator(resource.data.channelId)
+      );
+      allow delete: if isAuthenticated() && (
+        isOwner(resource.data.userId) ||
+        isModerator(resource.data.channelId) ||
+        isAdmin()
+      );
+    }
+
+    // Commands collection
+    match /commands/{commandId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Command executions collection
+    match /commandExecutions/{executionId} {
+      allow read: if isAuthenticated() && (
+        isOwner(resource.data.userId) ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() && 
+        isOwner(request.resource.data.userId);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // System logs collection
+    match /systemLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Presence collection
+    match /presence/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && (isOwner(userId) || isAdmin());
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && isOwner(resource.data.userId);
+      allow delete: if isAuthenticated() && (
+        isOwner(resource.data.userId) ||
+        isAdmin()
+      );
+    }
+  }
+}

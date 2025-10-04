@@ -4,7 +4,9 @@ export const config = {
   script_name: 'PAPATYA',
   script_version: 'v7',
   server_name: 'SiberTR IRC Network',
-  server: 'irc.sibertr.net',
+  server: 'irc.sibertr.online',
+  root_admin: 'bLueStar',
+  channels: ['str_chat', 'PAPATYA', 'Webcam']
 }
 
 export const bar = [
@@ -54,18 +56,17 @@ export const formatDate = (date: Date): string => {
   return `Tarih: ${day}/${month}/${year} ${dayName} - ${hours}:${minutes}:${seconds}`;
 };
 
+// Pure chat messages only (no join/leave events)
 export const chats = [
   { "time": "02:07", "event": "chat", "message": "Bişeyi anlayamıyorum bile kafam hamura dönüyor", "user": "Contura", "new_nick": null, "email": null, "channel": null },
   { "time": "02:07", "event": "chat", "message": "Açmasan atar gider yapıyor", "user": "Contura", "new_nick": null, "email": null, "channel": null },
   { "time": "02:07", "event": "chat", "message": "Telefon", "user": "Contura", "new_nick": null, "email": null, "channel": null },
   { "time": "02:07", "event": "chat", "message": "Herşey çok çabuk eskitiliyor", "user": "Mina", "new_nick": null, "email": null, "channel": null },
   { "time": "02:08", "event": "chat", "message": "Çok çabuk değişiyor olaylar", "user": "Mina", "new_nick": null, "email": null, "channel": null },
-  { "time": "02:08", "event": "quit", "message": "", "user": "ergin", "new_nick": null, "email": "PAPATYAv7@5E.79.3D55634C.sibertr.net", "channel": null },
   { "time": "02:08", "event": "nick_change", "message": "", "user": "Hazal", "new_nick": "Hazal' Away", "email": null, "channel": null },
   { "time": "02:08", "event": "chat", "message": "Maksatta bu belki", "user": "Mina", "new_nick": null, "email": null, "channel": null },
   { "time": "02:08", "event": "chat", "message": "Kafaların karışması", "user": "Mina", "new_nick": null, "email": null, "channel": null },
   { "time": "02:08", "event": "chat", "message": "yazmık ettiler bizim gibilerine senin gibilerine", "user": "Contura", "new_nick": null, "email": null, "channel": null },
-  { "time": "02:08", "event": "login", "message": "", "user": "PAPATYA-v7-292", "new_nick": null, "email": "PAPATYAv7@5F.5A0E9A1C5.sibertr.net", "channel": "#str_chat" },
   { "time": "02:09", "event": "chat", "message": "Hiç durma aynı adamla telefon görüşmesi yapılır mı", "user": "Contura", "new_nick": null, "email": null, "channel": null },
   { "time": "02:09", "event": "chat", "message": "Nasıl :)))))", "user": "Mina", "new_nick": null, "email": null, "channel": null },
   { "time": "02:09", "event": "chat", "message": "Telefon rehberinde yaklaşık 400 tane adam var 1000 de 1000'i aynı adam aramakta", "user": "Contura", "new_nick": null, "email": null, "channel": null },
@@ -97,31 +98,31 @@ export const chats = [
   { "time": "15:44", "event": "chat", "message": "Ciloçapatat öğretmen dişi alıcam shshshs", "user": "KeeN", "new_nick": null, "email": null, "channel": null },
   { "time": "15:44", "event": "chat", "message": "sen ne anlatıyorsun", "user": "MelekSy", "new_nick": null, "email": null, "channel": null },
   { "time": "16:30", "event": "login", "message": "", "user": "Boran", "new_nick": null, "email": "PAPATYAv7@3A.8C.F7B22134.sibertr.net", "channel": "#str_chat" },
-  { "time": "16:30", "event": "chat", "message": "Selam millet, neler dönüyor?", "user": "Boran", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:30", "event": "chat", "message": "Hoş geldin Boran, sakin buralar.", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:31", "event": "chat", "message": "Birkaç kişi vardı az önce, ama dağıldılar.", "user": "Eren_57", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:31", "event": "chat", "message": "Bugün çok sessiz ya, eskiden böyle değildi.", "user": "Boran", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:30", "event": "chat", "message": "selam millet neler donuyor", "user": "Boran", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:30", "event": "chat", "message": "hosgeldin boran sakin buralar", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:31", "event": "chat", "message": "birkac kisi vardi az once ama dagildilar", "user": "Eren_57", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:31", "event": "chat", "message": "bugun cok sessiz ya eskiden boyle degildi", "user": "Boran", "new_nick": null, "email": null, "channel": null },
   { "time": "16:32", "event": "login", "message": "", "user": "Zehra", "new_nick": null, "email": "PAPATYAv7@5D.9F.2A3E451B.sibertr.net", "channel": "#str_chat" },
-  { "time": "16:32", "event": "chat", "message": "Selam herkese!", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:32", "event": "chat", "message": "Merhaba Zehra, hoş geldin.", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:33", "event": "chat", "message": "Hoş bulduk, bugün neler konuştunuz?", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:33", "event": "chat", "message": "Pek bi şey yok, sessizdi burası.", "user": "Eren_57", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:34", "event": "chat", "message": "Neyse biraz hareket getirelim. Şu an ne yapıyorsunuz?", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:34", "event": "chat", "message": "Ben Netflix'e bakıyordum ama sıkıldım biraz.", "user": "Boran", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:35", "event": "chat", "message": "Ben de müzik dinliyorum, yeni bir playlist yaptım.", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:32", "event": "chat", "message": "selam herkese", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:32", "event": "chat", "message": "merhaba zehra hosgeldin", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:33", "event": "chat", "message": "hosbulduk bugun neler konustunuz", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:33", "event": "chat", "message": "pek bi sey yok sessizdi burasi", "user": "Eren_57", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:34", "event": "chat", "message": "neyse biraz hareket getirelim su an ne yapiyorsunuz", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:34", "event": "chat", "message": "ben netflixe bakiyordum ama sikildim biraz", "user": "Boran", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:35", "event": "chat", "message": "ben de muzik dinliyorum yeni bir playlist yaptim", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
   { "time": "16:35", "event": "quit", "message": "", "user": "Eren_57", "new_nick": null, "email": "PAPATYAv7@2B.6A.1E4D894A.sibertr.net", "channel": null },
-  { "time": "16:35", "event": "chat", "message": "Eren gitti sanırım :)", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:36", "event": "chat", "message": "Evet ya, sessizce kaçtı.", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:35", "event": "chat", "message": "eren gitti sanirim", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:36", "event": "chat", "message": "evet ya sessizce kacti", "user": "Eylul", "new_nick": null, "email": null, "channel": null },
   { "time": "16:37", "event": "login", "message": "", "user": "OmerCan", "new_nick": null, "email": "PAPATYAv7@7E.88.3D221A5B.sibertr.net", "channel": "#str_chat" },
-  { "time": "16:37", "event": "chat", "message": "Selam dostlar, ne yapıyorsunuz?", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:37", "event": "chat", "message": "Hoş geldin OmerCan! Çok bir şey yok, muhabbet ediyoruz.", "user": "Boran", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:38", "event": "chat", "message": "Güzel güzel, ben de katılayım.", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:37", "event": "chat", "message": "selam dostlar ne yapiyorsunuz", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:37", "event": "chat", "message": "hosgeldin omercan cok bi sey yok muhabbet ediyoruz", "user": "Boran", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:38", "event": "chat", "message": "guzel guzel ben de katilayim", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
   { "time": "16:38", "event": "nick_change", "message": "", "user": "Eylul", "new_nick": "Eylul_99", "email": null, "channel": null },
-  { "time": "16:39", "event": "chat", "message": "Aaa Eylül ismini değiştirdi :)", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:39", "event": "chat", "message": "Evet ya, biraz değişiklik olsun dedim.", "user": "Eylul_99", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:39", "event": "chat", "message": "aaa eylul ismini degistirdi", "user": "Zehra", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:39", "event": "chat", "message": "evet ya biraz degisiklik olsun dedim", "user": "Eylul_99", "new_nick": null, "email": null, "channel": null },
   { "time": "16:40", "event": "quit", "message": "", "user": "Boran", "new_nick": null, "email": "PAPATYAv7@3A.8C.F7B22134.sibertr.net", "channel": null },
-  { "time": "16:40", "event": "chat", "message": "Boran da gitti sanırım :)", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
-  { "time": "16:41", "event": "chat", "message": "Evet, yine az kaldık.", "user": "Eylul_99", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:40", "event": "chat", "message": "boran da gitti sanirim", "user": "OmerCan", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:41", "event": "chat", "message": "evet yine az kaldik", "user": "Eylul_99", "new_nick": null, "email": null, "channel": null },
   { "time": "16:42", "event": "login", "message": "", "user": "Mert_", "new_nick": null, "email": "PAPATYAv7@4D.73.A6F5D122.sibertr.net", "channel": "#str_chat" },
   { "time": "16:42", "event": "chat", "message": "Selam millet, kaçırdığım bir şey var mı?", "user": "Mert_", "new_nick": null, "email": null, "channel": null },
   { "time": "18:20", "event": "login", "message": "", "user": "melis_", "new_nick": null, "email": "PAPATYAv7@6F.2D.9B7C1123.sibertr.net", "channel": "#str_chat" },
@@ -157,6 +158,76 @@ export const chats = [
 
 ]
 
+
+// Mock chat data for PAPATYA channel
+export const papatyaChats = [
+  { "time": "14:15", "event": "chat", "message": "selam papatya ailesi bugun nasilsiniz", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:16", "event": "chat", "message": "selam bora iyiyiz sen nasilsin", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:17", "event": "chat", "message": "iyi iyi yeni uyelerimizi tanilalim mi", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:18", "event": "login", "message": "", "user": "Emrehan", "new_nick": null, "email": "PAPATYAv7@4A.2B.1C3D456E.sibertr.net", "channel": "#PAPATYA" },
+  { "time": "14:18", "event": "chat", "message": "hosgeldin emrehan papatyaya katildigin icin tesekkurler", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:19", "event": "chat", "message": "tesekkurler burayi cok begendim", "user": "Emrehan", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:20", "event": "chat", "message": "bu hafta sunucu guncellemeleri hakkinda bilgi verebilir miyiz", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:21", "event": "chat", "message": "tabii yeni ozellikler ve guvenlik guncellemeleri geliyor", "user": "HyTecH", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:22", "event": "login", "message": "", "user": "Fikret", "new_nick": null, "email": "PAPATYAv7@7E.9F.2A1B3C4D.sibertr.net", "channel": "#PAPATYA" },
+  { "time": "14:23", "event": "chat", "message": "fikret uzun zamandir yoktun hosgeldin", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:24", "event": "chat", "message": "evet ya is yogunlugu vardi simdi daha aktif olacagim", "user": "Fikret", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:25", "event": "chat", "message": "guzel bu arada yeni kurallarimiz var bir goz atmani oneririm", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:26", "event": "chat", "message": "tabii hemen bakacagim saygili davranis konusunda sorun yok", "user": "Fikret", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:27", "event": "chat", "message": "mukemmel bu yuzden papatya ailesi olarak boyle guzel bir ortamimiz var", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:28", "event": "chat", "message": "bu hafta sonu etkinlik var mi", "user": "Emrehan", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:29", "event": "chat", "message": "evet cumartesi aksami buyuk sohbet etkinligimiz var", "user": "Supervisor", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:30", "event": "chat", "message": "harika katilacagim kesinlikle", "user": "Fikret", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:31", "event": "quit", "message": "", "user": "HyTecH", "new_nick": null, "email": "PAPATYAv7@3F.5A.8B2C4D6E.sibertr.net", "channel": null },
+  { "time": "14:32", "event": "chat", "message": "hytech gitti muhtemelen sunucu bakimina basladi", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:33", "event": "chat", "message": "bu arada yeni uyelerimize ozel hediyelerimiz var", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:34", "event": "chat", "message": "ne tur hediyeler bunlar cok merak ettim", "user": "Emrehan", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:35", "event": "chat", "message": "ozel ranklar renkli nickler ve daha fazlasi", "user": "Supervisor", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:36", "event": "login", "message": "", "user": "Kerem", "new_nick": null, "email": "PAPATYAv7@6D.8E.9F1A2B3C.sibertr.net", "channel": "#PAPATYA" },
+  { "time": "14:37", "event": "chat", "message": "selam kerem moderatorluk nasil gidiyor", "user": "BoRaN", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:38", "event": "chat", "message": "iyi gidiyor topluluk gercekten saygili ve guzel", "user": "Kerem", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:39", "event": "chat", "message": "bu papatyanin en guzel yani zaten herkes birbirine saygili", "user": "Fikret", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:40", "event": "chat", "message": "kesinlikle bu yuzden burada olmaktan gurur duyuyorum", "user": "Emrehan", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:41", "event": "nick_change", "message": "", "user": "Emrehan", "new_nick": "Eyluls", "email": null, "channel": null },
+  { "time": "14:42", "event": "chat", "message": "aaa isim degistirdin eyluls guzel olmus", "user": "KartaL", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:43", "event": "chat", "message": "evet burayi cok sevdigim icin boyle yaptim", "user": "Eyluls", "new_nick": null, "email": null, "channel": null },
+  { "time": "14:44", "event": "chat", "message": "cok guzel bu tur guzel davranislar papatyayi ozel kiliyor", "user": "BoRaN", "new_nick": null, "email": null, "channel": null }
+];
+
+// Mock chat data for Webcam channel
+export const webcamChats = [
+  { "time": "16:20", "event": "chat", "message": "selam webcam kanali bugun kimler kamerayi acacak", "user": "Gece", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:21", "event": "login", "message": "", "user": "Güzel_Kiz_23", "new_nick": null, "email": "PAPATYAv7@2A.4B.6C8D9E0F.sibertr.net", "channel": "#Webcam" },
+  { "time": "16:22", "event": "chat", "message": "selam ben kamerami acabilirim", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:23", "event": "chat", "message": "harika guzel kiz kamerayi aciyor baskalari da katilabilir", "user": "Gece", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:24", "event": "login", "message": "", "user": "Yakışıklı_Erkek", "new_nick": null, "email": "PAPATYAv7@5E.7F.1A2B3C4D.sibertr.net", "channel": "#Webcam" },
+  { "time": "16:25", "event": "chat", "message": "selam ben de katilabilir miyim", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:26", "event": "chat", "message": "tabii ki hosgeldin yakisikli erkek", "user": "Gece", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:27", "event": "chat", "message": "bu aksam ne yapiyoruz grup sohbet mi", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:28", "event": "chat", "message": "evet grup sohbet yapabiliriz herkes kendi kamerayi acabilir", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:29", "event": "login", "message": "", "user": "Sevimli_Kedi", "new_nick": null, "email": "PAPATYAv7@8C.9D.0E1F2A3B.sibertr.net", "channel": "#Webcam" },
+  { "time": "16:30", "event": "chat", "message": "merhaba ben de katilayim mi", "user": "Sevimli_Kedi", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:31", "event": "chat", "message": "tabii sevimli kedi hosgeldin", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:32", "event": "chat", "message": "kac kisiyiz su an hepsini gorebilir miyiz", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:33", "event": "chat", "message": "su an 3 kisiiz daha fazla kisi katilabilir", "user": "Gece", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:34", "event": "chat", "message": "ben kamerami actim goruyor musunuz", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:35", "event": "chat", "message": "evet goruyorum cok guzel gorunuyorsun", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:36", "event": "chat", "message": "tesekkurler sen de ac bakalim", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:37", "event": "chat", "message": "tamam ben de aciyorum sevimli kedi sen de katil", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:38", "event": "chat", "message": "ben de aciyorum merak ediyorum nasil gorunuyorum", "user": "Sevimli_Kedi", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:39", "event": "login", "message": "", "user": "Sohbet_Adam", "new_nick": null, "email": "PAPATYAv7@3B.5C.7D8E9F0A.sibertr.net", "channel": "#Webcam" },
+  { "time": "16:40", "event": "chat", "message": "selam bu kanalda ne yapiliyor", "user": "Sohbet_Adam", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:41", "event": "chat", "message": "webcam sohbeti yapiyoruz katilmak ister misin", "user": "Gece", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:42", "event": "chat", "message": "tabii ben de kamerami acabilirim", "user": "Sohbet_Adam", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:43", "event": "chat", "message": "harika simdi 4 kisiiz herkes guzel gorunuyor", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:44", "event": "chat", "message": "bu aksam cok eglenceli geciyor tesekkurler herkese", "user": "Sevimli_Kedi", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:45", "event": "chat", "message": "evet ya guzel bir grup olduk duzenli bulusalim boyle", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:46", "event": "quit", "message": "", "user": "Sohbet_Adam", "new_nick": null, "email": "PAPATYAv7@3B.5C.7D8E9F0A.sibertr.net", "channel": null },
+  { "time": "16:47", "event": "chat", "message": "sohbet adam gitti devam edelim mi", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:48", "event": "chat", "message": "tabii devam edelim bu cok eglenceli", "user": "Sevimli_Kedi", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:49", "event": "chat", "message": "bu kanali cok seviyorum insanlarla tanismak guzel", "user": "Yakışıklı_Erkek", "new_nick": null, "email": null, "channel": null },
+  { "time": "16:50", "event": "chat", "message": "ben de papatyanin en guzel kanallarindan biri bu", "user": "Güzel_Kiz_23", "new_nick": null, "email": null, "channel": null }
+];
 
 export const nicknames = [
   { "nick": "bLueStar", "op": "~" },
@@ -255,3 +326,29 @@ export const nicknames = [
   { "nick": "Guest886145222", "op": "" },
   { "nick": "Huzurr", "op": "" }
 ];
+
+// Function to extract unique users from chat data
+export const extractUsersFromChatData = (chatData: any[]): Array<{ nick: string, op: string }> => {
+  const users = new Set<string>();
+
+  chatData.forEach(chat => {
+    if (chat.user && chat.user.trim()) {
+      users.add(chat.user);
+    }
+  });
+
+  // Convert to array and assign appropriate op levels
+  return Array.from(users).map(user => {
+    // Assign op levels based on user roles
+    let op = '';
+    if (user === 'bLueStar' || user === 'BoRaN') {
+      op = '~'; // Admin/Owner
+    } else if (user === 'KartaL' || user === 'Kerem' || user === 'Gece') {
+      op = '@'; // Moderator
+    } else if (user === 'HyTecH' || user === 'Supervisor') {
+      op = '+'; // Voice/Support
+    }
+
+    return { nick: user, op };
+  });
+};

@@ -1,0 +1,57 @@
+.window{
+  margin:100px auto;
+  min-width: 200px;
+  min-height: 300px;
+  display:flex;
+  flex-direction:column;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  border-radius:5px;
+}
+.winhead{
+  height:35px;
+  background:rgb(244,244,244);
+  border-bottom:0.5px solid rgba(162,163,164,.4);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display:flex;
+  align-items:center;
+  position: relative;
+  cursor:move;
+  font-size: 14px;
+}
+.winhead .button{
+  display:flex;
+  align-items:center;
+  z-index:9;
+  cursor: pointer !important; 
+}
+.button div{
+  width:12px;
+  height:12px;
+  margin-left:6px;
+  background:rgb(199,199,199);
+  border:0.5px solid rgb(169,169,169);
+  border-radius:50%;
+}
+.button .close{
+  background:rgb(231,69,70);
+  border:0.5px solid rgb(208,67,67);
+}
+.button .min{
+  background:rgb(246,180,39);
+  border:0.5px solid rgb(212,154,58);
+}
+.button .max{
+  background:rgb(86,202,53);
+}
+.winhead .title{
+  position: absolute;
+  width:100%;
+  text-align:center;
+}
+.winbody{
+  height:100%;
+  background:rgb(231,231,231);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}

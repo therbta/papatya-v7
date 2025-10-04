@@ -12,13 +12,22 @@ interface MenuItem {
   submenu: string[];
 }
 
-const MenuBar = () => {
+interface MenuBarProps {
+  onMenuItemClick?: (menu: string, submenu: string) => void;
+}
+
+const MenuBar: React.FC<MenuBarProps> = ({ onMenuItemClick }) => {
 
   // States
   const [openMenu, setOpenMenu] = React.useState<string | null>(null);
 
   const handleMenuClick = (menu: string) => {
     setOpenMenu(openMenu === menu ? null : menu);
+  };
+
+  const handleSubmenuClick = (menu: string, submenu: string) => {
+    setOpenMenu(null);
+    onMenuItemClick && onMenuItemClick(menu, submenu);
   };
 
   React.useEffect(() => {
@@ -43,7 +52,11 @@ const MenuBar = () => {
           {openMenu === item.menu && (
             <div className='sub-menu'>
               {item.submenu.map((subItem: string, index: number) => (
-                <div key={index} className='sub-menu-item'>
+                <div
+                  key={index}
+                  className='sub-menu-item'
+                  onClick={() => handleSubmenuClick(item.menu, subItem)}
+                >
                   {subItem}
                 </div>
               ))}
