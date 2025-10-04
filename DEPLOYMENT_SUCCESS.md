@@ -18,20 +18,26 @@
 ## ✅ **Vercel Deployment Completed**
 
 ### Production Deployment:
-- **Status**: ✅ **LIVE**
-- **URL**: `https://papatya-v7-d2lzfjq5t-baris-taskirans-projects.vercel.app`
-- **Deployment ID**: `CntyV9WQ5AMu6LbLqJ8R3FB4tmrG`
-- **Build Time**: ~2 seconds
+- **Status**: ✅ **LIVE & READY**
+- **URL**: `https://papatya-v7.vercel.app` (Production)
+- **Latest Deployment**: `https://papatya-v7-ci9sc30zk-baris-taskirans-projects.vercel.app`
+- **Deployment ID**: `BNKP7sCbXx9dhEEPwvkX3hzqqGuT`
+- **Build Time**: 21 seconds
+- **Build Status**: ✅ Ready (200 OK)
 - **Project ID**: `prj_6gjx91PFk3xMnJRcflDFmZd6PzL0`
 - **Team ID**: `team_IiA5gw1WNzvL1sURY6IEz7LQ`
+- **SSL Certificates**: 🔄 Being generated for sibertr.online and www.sibertr.online
 
 ### Vercel Commands:
 ```bash
 # View deployment logs
-vercel inspect papatya-v7-d2lzfjq5t-baris-taskirans-projects.vercel.app --logs
+vercel inspect papatya-v7-ci9sc30zk-baris-taskirans-projects.vercel.app --logs
 
 # Redeploy if needed
-vercel redeploy papatya-v7-d2lzfjq5t-baris-taskirans-projects.vercel.app
+vercel redeploy papatya-v7-ci9sc30zk-baris-taskirans-projects.vercel.app
+
+# Check all deployments
+vercel ls
 ```
 
 ---
