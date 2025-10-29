@@ -7,6 +7,10 @@ import { config, formatDate } from '../const';
 const Channel = React.lazy(() => import('./Channel'));
 const Peer = React.lazy(() => import('./Peer'));
 const LoadingMock = React.lazy(() => import('../components/LoadingMock'));
+const ContextMenu = React.lazy(() => import('../components/ContextMenu'));
+
+// Utils
+import { getConsoleContextMenuItems } from '../utils/contextMenuConfigs';
 
 // ==============================================================================================
 
@@ -36,6 +40,13 @@ const Console = (props: ConsoleProps) => {
   // Refs
   const chatContainerRef = React.useRef<HTMLDivElement>(null);
   const userScrolledUp = React.useRef(false);
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = React.useState<{ visible: boolean; x: number; y: number }>({
+    visible: false,
+    x: 0,
+    y: 0
+  });
 
   // Cookie functions for tracking script runs
   const getScriptRunCount = (): number => {
@@ -90,6 +101,45 @@ const Console = (props: ConsoleProps) => {
     }
   };
 
+  // Handle right-click context menu
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY
+    });
+  };
+
+  // Handle context menu actions
+  const handleContextAction = (action: string) => {
+    console.log('Console context action:', action);
+    // Implement actions here
+    switch (action) {
+      case 'clear':
+        // Clear console logic
+        break;
+      case 'channels':
+        // Open channels list
+        break;
+      case 'scripts':
+        // Open scripts editor
+        break;
+      case 'options':
+        // Open options dialog
+        break;
+      case 'connect':
+        // Connect to server
+        break;
+      case 'disconnect':
+        // Disconnect from server
+        break;
+      case 'about':
+        // Show about dialog
+        break;
+    }
+  };
+
   const ConsoleView = () => {
 
     return (
@@ -102,8 +152,9 @@ const Console = (props: ConsoleProps) => {
   }
 
   return (
-    <div className="chats" ref={chatContainerRef} onScroll={handleScroll}>
-      <div className="chat-content">
+    <>
+      <div className="chats" ref={chatContainerRef} onScroll={handleScroll} onContextMenu={handleContextMenu}>
+        <div className="chat-content">
 
         {activeWindow === null && (
           <>
@@ -152,8 +203,23 @@ const Console = (props: ConsoleProps) => {
           </React.Suspense>
         }
 
+        </div>
       </div>
-    </div>
+
+      {/* Context Menu */}
+      {activeWindow === null && (
+        <React.Suspense fallback={null}>
+          <ContextMenu
+            visible={contextMenu.visible}
+            x={contextMenu.x}
+            y={contextMenu.y}
+            items={getConsoleContextMenuItems(handleContextAction)}
+            onClose={() => setContextMenu({ visible: false, x: 0, y: 0 })}
+            minWidth={220}
+          />
+        </React.Suspense>
+      )}
+    </>
   );
 
 };

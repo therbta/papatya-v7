@@ -10,4 +10,8 @@ export default defineConfig({
     tailwindcss(),
   ],
   assetsInclude: ['**/*.wav', '**/*.WAV'],
+  server: {
+    port: 10000,
+    strictPort: true,
+  },
 })

@@ -157,12 +157,12 @@ const App = () => {
         <div className="flex">
 
           <div className="w-1/6">
-            <img src="https://upload.wikimedia.org/wikipedia/en/e/e8/Mircnewlogo.png" alt="mIRC"
+            <img src="https://upload.wikimedia.org/wikipedia/en/e/e8/Mircnewlogo.png" alt="Papatya mIRC Script - Sibertr mIRC Client - Mircturk"
               style={{ maxWidth: 40, height: 'auto' }} className="rounded-lg" />
           </div>
           <div className="w-4/6 text-xs px-1.5">
             e-mIRC &copy; v1.00 <br />
-            <span className="text-gray-500">Internet Relay Chat Client with React</span>
+            <span className="text-gray-500">Papatya mIRC Script - Web Tabanlı Internet Relay Chat Client with React</span>
 
             <div className="mt-2">
               Copyright &copy; {new Date().getFullYear()} <br />
@@ -176,7 +176,7 @@ const App = () => {
           </div>
 
           <div className="w-1/6">
-            <img src="https://avatars.githubusercontent.com/u/1035734?v=4" alt="mIRC"
+            <img src="https://avatars.githubusercontent.com/u/1035734?v=4" alt="Papatya mIRC Developer - Baris Taskiran"
               style={{ maxWidth: 60, height: 'auto' }} className="rounded-lg mx-auto" />
           </div>
 

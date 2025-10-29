@@ -6,10 +6,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 9999;
+  pointer-events: none;
 }
 
 .papatya-dialog {
@@ -18,8 +16,13 @@
   border: 2px solid #999;
   border-radius: 8px;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
   overflow: hidden;
+  pointer-events: all;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Tabs */
@@ -62,6 +65,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .banner-icon {
@@ -138,6 +143,10 @@
   font-size: 13px;
   background: white;
   outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .form-input:focus {

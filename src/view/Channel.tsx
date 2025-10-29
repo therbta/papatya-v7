@@ -1,5 +1,11 @@
 import React, { JSX } from 'react'
 
+// Components
+const ContextMenu = React.lazy(() => import('../components/ContextMenu'));
+
+// Utils
+import { getChannelContextMenuItems } from '../utils/contextMenuConfigs';
+
 type Props = {
   connected: boolean;
   chatContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -19,6 +25,13 @@ const Channel = (props: Props) => {
   // Props:
   const { connected, chatContainerRef, userScrolledUp, currentUser, channelName, channelChatData, channelLoadingComplete, onNicknameClick, onNicknameSelect } = props;
 
+  // Context menu state
+  const [contextMenu, setContextMenu] = React.useState<{ visible: boolean; x: number; y: number }>({
+    visible: false,
+    x: 0,
+    y: 0
+  });
+
   // Use channel-specific chat data
   const displayedChats = channelChatData;
 
@@ -35,9 +48,55 @@ const Channel = (props: Props) => {
     return displayedChats;
   }, [displayedChats]);
 
+  // Handle right-click context menu
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY
+    });
+  };
+
+  // Handle context menu actions
+  const handleContextAction = (action: string, channel?: string) => {
+    console.log('Channel context action:', action, channel);
+    // Implement actions here
+    switch (action) {
+      case 'clear':
+        // Clear channel messages
+        break;
+      case 'join':
+        // Join channel dialog
+        break;
+      case 'part':
+        // Part from channel
+        break;
+      case 'topic':
+        // Edit channel topic
+        break;
+      case 'mode':
+        // Edit channel mode
+        break;
+      case 'banlist':
+        // View ban list
+        break;
+      case 'copy':
+        // Copy selected text
+        break;
+      case 'find':
+        // Find dialog
+        break;
+      case 'ignore':
+        // Ignore list dialog
+        break;
+    }
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-      <div style={{ marginTop: "auto" }}>
+    <>
+      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }} onContextMenu={handleContextMenu}>
+        <div style={{ marginTop: "auto" }}>
 
         {allMessages.map((chat, index) => {
 
@@ -130,8 +189,21 @@ const Channel = (props: Props) => {
 
         })}
 
+        </div>
       </div>
-    </div>
+
+      {/* Context Menu */}
+      <React.Suspense fallback={null}>
+        <ContextMenu
+          visible={contextMenu.visible}
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={getChannelContextMenuItems(channelName, handleContextAction)}
+          onClose={() => setContextMenu({ visible: false, x: 0, y: 0 })}
+          minWidth={220}
+        />
+      </React.Suspense>
+    </>
   )
 }
 

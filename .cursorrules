@@ -1,0 +1,61 @@
+# Cursor Rules for PAPATYA v7
+
+## Documentation Organization
+
+All project documentation should be organized in the `/docs` directory following a categorical structure:
+
+### Directory Structure
+
+```
+docs/
+├── bug-fixes/          # Bug fixes and technical issue resolutions
+├── deployment/         # Deployment guides, configurations, and success logs
+├── integration/        # Third-party integrations (Firebase, APIs, etc.)
+├── features/           # Feature documentation and specifications
+└── project/            # Project-wide documentation (PRD, architecture, etc.)
+```
+
+### File Naming Convention
+
+**All markdown documentation files MUST use the date prefix format:**
+
+```
+yyyy-mm-dd-{descriptive-task-name}.md
+```
+
+Examples:
+- `2025-01-03-authentic-mirc-fixes.md`
+- `2025-01-03-deployment-success.md`
+- `2025-01-02-chat-persistence-fixes.md`
+
+### Rules
+
+1. **Date Format**: Always use `yyyy-mm-dd` format (ISO 8601)
+2. **Descriptive Names**: Use kebab-case for task names (lowercase with hyphens)
+3. **Category Organization**: Place files in appropriate subdirectories
+4. **Consistency**: Maintain this format for ALL new documentation files
+5. **README.md**: Keep the main `README.md` in the project root (do not move to `/docs`)
+
+### When Creating New Documentation
+
+1. Determine the appropriate category:
+   - Bug fixes → `docs/bug-fixes/`
+   - Deployment guides → `docs/deployment/`
+   - Integration docs → `docs/integration/`
+   - Feature specs → `docs/features/`
+   - Project docs → `docs/project/`
+
+2. Use today's date in `yyyy-mm-dd` format
+
+3. Name the file descriptively with kebab-case
+
+4. Example: Creating a new bug fix document today (2025-01-03):
+   ```
+   docs/bug-fixes/2025-01-03-connection-timeout-fix.md
+   ```
+
+### Maintenance
+
+- Review and organize documentation regularly
+- Update this file if new categories are needed
+- Ensure all team members follow this convention

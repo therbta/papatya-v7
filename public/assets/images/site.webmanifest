@@ -1,7 +1,7 @@
 {
-  "name": "PAPATYA v7 e-mIRC",
-  "short_name": "PAPATYA",
-  "description": "Modern mIRC clone with Firebase backend",
+  "name": "Papatya v7 e-mIRC - Papatya mIRC Script | Sibertr mIRC Client",
+  "short_name": "Papatya mIRC",
+  "description": "Papatya mIRC script ile web tabanlı mIRC deneyimi. Sibertr, mircturk ve papatya script ile gerçek zamanlı IRC sohbeti.",
   "icons": [
     {
       "src": "/assets/images/android-chrome-192x192.png",

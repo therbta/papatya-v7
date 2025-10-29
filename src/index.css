@@ -104,6 +104,7 @@ body {
   overflow: hidden;
   flex: 1;
   min-width: 200px;
+  cursor: default;
 }
 
 .chat-container {
@@ -111,6 +112,7 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  cursor: default;
 }
 
 .chats {
@@ -120,12 +122,14 @@ body {
   display: flex;
   flex-direction: column;
   font-size: 14px;
+  cursor: default;
 }
 
 .chat-content {
   display: flex;
   flex-direction: column;
   margin-top: auto; /* Pushes messages to bottom initially */
+  cursor: text;
 }
 
 .chat-item {
@@ -246,6 +250,21 @@ body {
   width: 100%;
 }
 
+/* Blinking animation for unseen messages - red to black (instant, no fade) */
+@keyframes blink-unseen {
+  0%, 50% {
+    color: #ff0000; /* Red */
+  }
+  50.01%, 100% {
+    color: #000000; /* Black */
+  }
+}
+
+.channel-text.unseen-messages,
+.nick-item.unseen-messages {
+  animation: blink-unseen 2s infinite steps(1, end);
+}
+
 .channel-icon {
   width: 14px;
   height: 14px;
@@ -281,10 +300,69 @@ body {
   border-top: 1px solid #A6A6A6;
 }
 
-/* Context Menu Styles */
-.context-menu-item:hover {
-  background-color: #4f94f3 !important;
-  color: #fff !important;
+/* Context Menu Styles - Window Style */
+.context-menu {
+  position: fixed;
+  background-color: #F5F5F5;
+  border: 1px solid #A6A6A6;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: #333333;
+  z-index: 10000;
+  padding: 2px 0;
+  cursor: default;
+  user-select: none;
+}
+
+.context-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 20px;
+  cursor: pointer;
+  color: #000000;
+  line-height: 20px;
+  min-height: 22px;
+  transition: background-color 0.1s ease;
+}
+
+.context-menu-item:hover:not(.disabled) {
+  background-color: #E0E0E0;
+  color: #000000;
+}
+
+.context-menu-item.disabled {
+  color: #999999;
+  cursor: default;
+}
+
+.context-menu-item.danger {
+  color: #000000;
+}
+
+.context-menu-item.danger:hover:not(.disabled) {
+  background-color: #E0E0E0;
+}
+
+.context-menu-label {
+  flex: 1;
+  text-align: left;
+}
+
+.context-menu-shortcut {
+  margin-left: 20px;
+  color: #666666;
+  font-size: 12px;
+  font-weight: normal;
+  text-align: right;
+}
+
+.context-menu-separator {
+  height: 1px;
+  background-color: #D3D3D3;
+  margin: 3px 0;
+  border: none;
 }
 
 /* Enhanced submenu item styles */

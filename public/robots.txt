@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://papatya-v7.vercel.app/sitemap.xml
+
+# Keywords for SEO
+# papatya mirc, papatya script, mirc, mircturk, sibertr
+

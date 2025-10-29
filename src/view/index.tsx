@@ -13,6 +13,9 @@ import {
   type ChannelUsers
 } from '../joinLeaveData';
 
+// Utils
+import { markAsSeen, hasUnseenMessages, initializeTracking, initializeUnseen, getUnseenMessages } from '../utils/messageNotification';
+
 // Assets
 import SideBg from '../assets/yan.jpg';
 import BarIcon from '../assets/bar.png';
@@ -91,6 +94,56 @@ const Emirc = ({ nickname }: { nickname: string }) => {
       console.log('Saved user tabs to cookie:', chatUsers);
     }
   }, [chatUsers]);
+
+  // Mark messages as seen when switching to a tab or when viewing the active tab
+  React.useEffect(() => {
+    if (activeWindow !== null) {
+      const messages = channelChatData[activeWindow] || [];
+      if (messages.length > 0) {
+        markAsSeen(activeWindow, messages.length);
+      }
+    }
+  }, [activeWindow, channelChatData]);
+
+  // Initialize tracking for all channels and users when messages are loaded
+  React.useEffect(() => {
+    // Initialize channels
+    channels.forEach(channel => {
+      const channelName = `#${channel}`;
+      const messages = channelChatData[channelName] || [];
+      if (messages.length > 0) {
+        const unseenData = getUnseenMessages();
+        if (!unseenData[channelName]) {
+          // First time seeing messages for this channel
+          if (activeWindow === channelName) {
+            // User is viewing this channel, mark all as seen
+            markAsSeen(channelName, messages.length);
+          } else {
+            // User is not viewing, mark as all unseen initially
+            initializeUnseen(channelName, messages.length);
+          }
+        }
+      }
+    });
+    
+    // Initialize users
+    chatUsers.forEach(user => {
+      const messages = channelChatData[user] || [];
+      if (messages.length > 0) {
+        const unseenData = getUnseenMessages();
+        if (!unseenData[user]) {
+          // First time seeing messages for this user
+          if (activeWindow === user) {
+            // User is viewing this chat, mark all as seen
+            markAsSeen(user, messages.length);
+          } else {
+            // User is not viewing, mark as all unseen initially
+            initializeUnseen(user, messages.length);
+          }
+        }
+      }
+    });
+  }, [channels, chatUsers, channelChatData, activeWindow]);
 
   React.useEffect(() => {
     // Start loading sequence immediately
@@ -489,14 +542,18 @@ const Emirc = ({ nickname }: { nickname: string }) => {
 
           {/* Channels */}
           {connected && channels.map((channel, index) => {
+            const channelName = `#${channel}`;
+            const messages = channelChatData[channelName] || [];
+            const hasUnseen = activeWindow !== channelName && hasUnseenMessages(channelName, messages);
+            
             return (
               <div
                 key={index}
-                className={`channel-item ${activeWindow === `#${channel}` ? 'active' : ''}`}
-                onClick={() => setActiveWindow(`#${channel}`)}
+                className={`channel-item ${activeWindow === channelName ? 'active' : ''}`}
+                onClick={() => setActiveWindow(channelName)}
               >
                 <img src={ChannelItemIcon} className='channel-icon' />
-                <span className="channel-text">
+                <span className={`channel-text ${hasUnseen ? 'unseen-messages' : ''}`}>
                   #{channel}
                 </span>
               </div>
@@ -504,18 +561,23 @@ const Emirc = ({ nickname }: { nickname: string }) => {
           })}
 
           {/* Users */}
-          {chatUsers.map((user, index) => (
-            <div
-              key={index}
-              className={`channel-item ${activeWindow === user ? 'active' : ''}`}
-              onClick={() => setActiveWindow(user)}
-            >
-              <img src={ListItemIcon} className='channel-icon' />
-              <span className="channel-text">
-                {user}
-              </span>
-            </div>
-          ))}
+          {chatUsers.map((user, index) => {
+            const messages = channelChatData[user] || [];
+            const hasUnseen = activeWindow !== user && hasUnseenMessages(user, messages);
+            
+            return (
+              <div
+                key={index}
+                className={`channel-item ${activeWindow === user ? 'active' : ''}`}
+                onClick={() => setActiveWindow(user)}
+              >
+                <img src={ListItemIcon} className='channel-icon' />
+                <span className={`channel-text ${hasUnseen ? 'unseen-messages' : ''}`}>
+                  {user}
+                </span>
+              </div>
+            );
+          })}
 
 
 
