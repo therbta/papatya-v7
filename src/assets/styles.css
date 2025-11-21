@@ -1,23 +1,56 @@
 .window{
-  margin:100px auto;
+  margin: 100px auto;
   min-width: 200px;
   min-height: 300px;
-  display:flex;
-  flex-direction:column;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  border-radius:5px;
+  border-radius: 5px;
+  /* Responsive adjustments */
+  width: clamp(300px, 80vw, 600px);
+  height: clamp(300px, 70vh, 600px);
+  position: relative;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .window {
+    margin: 20px auto;
+    width: 95vw;
+    max-width: 95vw;
+    min-width: 95vw;
+    height: auto;
+    max-height: 90vh;
+    min-height: 300px;
+  }
 }
 .winhead{
-  height:35px;
-  background:rgb(244,244,244);
-  border-bottom:0.5px solid rgba(162,163,164,.4);
+  height: 35px;
+  min-height: 35px;
+  background: rgb(244,244,244);
+  border-bottom: 0.5px solid rgba(162,163,164,.4);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   position: relative;
-  cursor:move;
+  cursor: move;
   font-size: 14px;
+  /* Responsive adjustments */
+  font-size: clamp(12px, 2vw, 14px);
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .winhead {
+    height: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
 }
 .winhead .button{
   display:flex;
@@ -26,12 +59,27 @@
   cursor: pointer !important; 
 }
 .button div{
-  width:12px;
-  height:12px;
-  margin-left:6px;
-  background:rgb(199,199,199);
-  border:0.5px solid rgb(169,169,169);
-  border-radius:50%;
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  min-height: 12px;
+  margin-left: 6px;
+  background: rgb(199,199,199);
+  border: 0.5px solid rgb(169,169,169);
+  border-radius: 50%;
+  flex-shrink: 0;
+  /* Touch-friendly on mobile */
+  cursor: pointer;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .button div {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    margin-left: 8px;
+  }
 }
 .button .close{
   background:rgb(231,69,70);
@@ -46,12 +94,62 @@
 }
 .winhead .title{
   position: absolute;
-  width:100%;
-  text-align:center;
+  width: 100%;
+  text-align: center;
+  left: 0;
+  right: 0;
+  /* Prevent text overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 60px;
+  font-size: clamp(12px, 2vw, 14px);
+}
+
+@media (max-width: 768px) {
+  .winhead .title {
+    padding: 0 50px;
+    font-size: 13px;
+  }
 }
 .winbody{
-  height:100%;
-  background:rgb(231,231,231);
+  height: 100%;
+  min-height: 200px;
+  background: rgb(231,231,231);
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  overflow: auto;
+  /* Responsive padding */
+  padding: clamp(10px, 2vw, 20px);
+  /* Smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+/* Custom scrollbar for winbody */
+.winbody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.winbody::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+.winbody::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .winbody {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Ensure content is readable on all devices */
+.winbody * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }

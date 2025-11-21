@@ -12,6 +12,8 @@
 
 .papatya-dialog {
   width: 400px;
+  max-width: 95vw;
+  max-height: 95vh;
   background: #e8e8e8;
   border: 2px solid #999;
   border-radius: 8px;
@@ -23,6 +25,32 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  /* Responsive width */
+  width: clamp(300px, 90vw, 500px);
+  /* Center on screen */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  /* Prevent overflow */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for dialog */
+.papatya-dialog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.papatya-dialog::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+.papatya-dialog::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 4px;
 }
 
 /* Tabs */
@@ -43,6 +71,18 @@
   color: #000;
   cursor: pointer;
   transition: background 0.2s;
+  /* Responsive adjustments */
+  padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 16px);
+  font-size: clamp(11px, 2vw, 13px);
+  /* Touch-friendly on mobile */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dialog-tabs .tab:hover {
@@ -85,6 +125,12 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   letter-spacing: 1px;
   margin-bottom: 2px;
+  /* Responsive font size */
+  font-size: clamp(18px, 4vw, 24px);
+  /* Prevent overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .banner-url {
@@ -127,6 +173,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  /* Responsive: stack on mobile */
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .form-label {
@@ -147,6 +196,12 @@
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+  /* Responsive adjustments */
+  padding: clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 12px);
+  font-size: clamp(14px, 3vw, 16px); /* Prevent zoom on iOS */
+  min-width: 120px;
+  /* Prevent text size adjustment on iOS */
+  -webkit-text-size-adjust: 100%;
 }
 
 .form-input:focus {
@@ -164,6 +219,12 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
+  /* Responsive adjustments */
+  padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 24px);
+  font-size: clamp(12px, 2.5vw, 14px);
+  /* Touch-friendly on mobile */
+  min-height: 44px;
+  flex-shrink: 0;
 }
 
 .connect-btn:hover {
@@ -181,6 +242,11 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
+  /* Responsive padding */
+  padding: clamp(8px, 2vw, 12px);
+  gap: clamp(4px, 1vw, 8px);
+  /* Responsive grid - adjusts automatically */
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 }
 
 .server-btn {
@@ -197,6 +263,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Responsive adjustments */
+  padding: clamp(6px, 1.5vw, 10px) clamp(4px, 1vw, 8px);
+  font-size: clamp(10px, 2vw, 12px);
+  min-height: clamp(32px, 8vw, 44px);
+  /* Touch-friendly */
+  min-width: 70px;
+  /* Prevent text overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
 }
 
 .server-btn:hover {
@@ -229,6 +306,13 @@
   color: #333;
   cursor: pointer;
   transition: all 0.2s;
+  /* Responsive adjustments */
+  padding: clamp(8px, 2vw, 10px) clamp(24px, 6vw, 36px);
+  font-size: clamp(11px, 2.5vw, 13px);
+  /* Touch-friendly on mobile */
+  min-height: 44px;
+  min-width: 100px;
+  white-space: nowrap;
 }
 
 .footer-btn:hover {
@@ -240,23 +324,196 @@
   background: #e8e8e8;
 }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVE MEDIA QUERIES
+   ============================================ */
+
+/* Mobile devices (phones, up to 600px) */
 @media (max-width: 600px) {
   .papatya-dialog {
-    width: 95%;
-    max-width: 520px;
+    width: 95vw;
+    max-width: 95vw;
+    height: auto;
+    max-height: 90vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 20px auto;
   }
-  
-  .server-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+  .dialog-tabs {
+    flex-wrap: wrap;
   }
-  
+
+  .dialog-tabs .tab {
+    flex: 1 1 33.333%;
+    min-width: 100px;
+    font-size: 11px;
+    padding: 10px 8px;
+  }
+
+  .dialog-banner {
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+
+  .banner-icon {
+    font-size: 28px;
+  }
+
+  .banner-title {
+    font-size: 18px;
+  }
+
+  .banner-url {
+    font-size: 11px;
+  }
+
+  .connection-box {
+    margin: 10px;
+  }
+
+  .connection-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .connection-icon {
+    font-size: 28px;
+    align-self: center;
+  }
+
   .connection-form {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
-  
+
+  .form-label {
+    font-size: 12px;
+  }
+
+  .form-input {
+    width: 100%;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
   .connect-btn {
     width: 100%;
+    min-height: 44px;
   }
+
+  .server-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .server-btn {
+    min-height: 44px;
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+
+  .dialog-footer {
+    padding: 8px;
+  }
+
+  .footer-btn {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* Small tablets (601px to 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+  .papatya-dialog {
+    width: 90vw;
+    max-width: 500px;
+  }
+
+  .server-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .connection-form {
+    flex-wrap: wrap;
+  }
+
+  .connect-btn {
+    flex: 0 0 auto;
+  }
+}
+
+/* Tablets (769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .papatya-dialog {
+    width: 85vw;
+    max-width: 500px;
+  }
+
+  .server-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .papatya-dialog {
+    max-height: 95vh;
+    height: auto;
+  }
+
+  .dialog-banner {
+    padding: 8px 12px;
+  }
+
+  .banner-title {
+    font-size: 20px;
+  }
+
+  .server-grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 6px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .dialog-tabs .tab,
+  .server-btn,
+  .connect-btn,
+  .footer-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .dialog-tabs .tab {
+    padding: 12px 16px;
+  }
+
+  .server-btn {
+    padding: 10px 6px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .banner-icon,
+  .connection-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Prevent horizontal scroll */
+.papatya-dialog-wrapper {
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
