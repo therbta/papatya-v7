@@ -214,6 +214,14 @@ export const generateStableLurkers = (channelName: string): Array<{ nick: string
   lurkers.push({ nick: 'bLueStar', op: '~' });
   usedNicknames.add('bLueStar');
 
+  // Always add @esmerim_23 as a stable lurker (moderator/op)
+  lurkers.push({ nick: 'esmerim_23', op: '@' });
+  usedNicknames.add('esmerim_23');
+
+  // Always add @NiGDe as a stable lurker (moderator/op)
+  lurkers.push({ nick: 'NiGDe', op: '@' });
+  usedNicknames.add('NiGDe');
+
   // Reserve first portion for cycling users
   const startIndex = 0;
 
@@ -282,6 +290,18 @@ export const getAllChannelUsers = (channelUsers: ChannelUsers, currentUser: stri
   const blueStarExists = allUsers.some(u => u.nick === 'bLueStar');
   if (!blueStarExists) {
     allUsers.push({ nick: 'bLueStar', op: '~' });
+  }
+
+  // Always add @esmerim_23 if not already present (with @ op prefix for moderator/op)
+  const esmerimExists = allUsers.some(u => u.nick === 'esmerim_23');
+  if (!esmerimExists) {
+    allUsers.push({ nick: 'esmerim_23', op: '@' });
+  }
+
+  // Always add @NiGDe if not already present (with @ op prefix for moderator/op)
+  const nigdeExists = allUsers.some(u => u.nick === 'NiGDe');
+  if (!nigdeExists) {
+    allUsers.push({ nick: 'NiGDe', op: '@' });
   }
 
   // Remove duplicates
