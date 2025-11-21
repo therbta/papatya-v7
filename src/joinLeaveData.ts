@@ -210,6 +210,10 @@ export const generateStableLurkers = (channelName: string): Array<{ nick: string
   const lurkers: Array<{ nick: string, op: string }> = [];
   const usedNicknames = new Set<string>();
 
+  // Always add ~bLueStar as the first stable lurker (owner/admin)
+  lurkers.push({ nick: 'bLueStar', op: '~' });
+  usedNicknames.add('bLueStar');
+
   // Reserve first portion for cycling users
   const startIndex = 0;
 
@@ -268,10 +272,16 @@ export const getAllChannelUsers = (channelUsers: ChannelUsers, currentUser: stri
     ...channelUsers.cyclingUsers
   ];
 
-  // Add current user if not already present
+  // Always add current user (nickname) if not already present
   const currentUserExists = allUsers.some(u => u.nick === currentUser);
   if (!currentUserExists) {
     allUsers.push({ nick: currentUser, op: '' });
+  }
+
+  // Always add ~bLueStar if not already present (with ~ op prefix for owner/admin)
+  const blueStarExists = allUsers.some(u => u.nick === 'bLueStar');
+  if (!blueStarExists) {
+    allUsers.push({ nick: 'bLueStar', op: '~' });
   }
 
   // Remove duplicates
