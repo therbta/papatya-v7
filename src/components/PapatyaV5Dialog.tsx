@@ -8,7 +8,17 @@ interface PapatyaV5DialogProps {
 
 const PapatyaV5Dialog: React.FC<PapatyaV5DialogProps> = ({ onConnect, onClose }) => {
   const [activeTab, setActiveTab] = useState('baglanti');
-  const [nickname, setNickname] = useState('PAPATYAv7-' + (Math.random() * 1000).toFixed(0));
+  
+  // Load saved nickname from localStorage, or use default
+  const getSavedNickname = (): string => {
+    const saved = localStorage.getItem('papatya_last_nickname');
+    if (saved) {
+      return saved;
+    }
+    return 'PAPATYAv7-' + (Math.random() * 1000).toFixed(0);
+  };
+  
+  const [nickname, setNickname] = useState(getSavedNickname);
   const [selectedServer, setSelectedServer] = useState('SiberTR.Net');
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -18,7 +28,10 @@ const PapatyaV5Dialog: React.FC<PapatyaV5DialogProps> = ({ onConnect, onClose })
   const handleConnect = () => {
     const server = PAPATYA_DATA.servers.find(s => s.name === selectedServer);
     if (server && nickname.trim()) {
-      onConnect(nickname.trim(), server);
+      const trimmedNickname = nickname.trim();
+      // Save nickname to localStorage when connecting
+      localStorage.setItem('papatya_last_nickname', trimmedNickname);
+      onConnect(trimmedNickname, server);
     }
   };
 

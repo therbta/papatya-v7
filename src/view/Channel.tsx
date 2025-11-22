@@ -18,12 +18,13 @@ type Props = {
   setChannelLoadingComplete?: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
   onNicknameClick?: (nickname: string) => void;
   onNicknameSelect?: (nickname: string) => void;
+  isRestoringScroll?: boolean;
 }
 
 const Channel = (props: Props) => {
 
   // Props:
-  const { connected, chatContainerRef, userScrolledUp, currentUser, channelName, channelChatData, channelLoadingComplete, onNicknameClick, onNicknameSelect } = props;
+  const { connected, chatContainerRef, userScrolledUp, currentUser, channelName, channelChatData, setChannelChatData, channelLoadingComplete, onNicknameClick, onNicknameSelect, isRestoringScroll } = props;
 
   // Context menu state
   const [contextMenu, setContextMenu] = React.useState<{ visible: boolean; x: number; y: number }>({
@@ -35,12 +36,12 @@ const Channel = (props: Props) => {
   // Use channel-specific chat data
   const displayedChats = channelChatData;
 
-  // Auto-scroll when new messages arrive
+  // Auto-scroll when new messages arrive (but not when restoring scroll position)
   React.useEffect(() => {
-    if (chatContainerRef.current && !userScrolledUp.current) {
+    if (chatContainerRef.current && !userScrolledUp.current && !isRestoringScroll) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [displayedChats.length, chatContainerRef, userScrolledUp]);
+  }, [displayedChats.length, chatContainerRef, userScrolledUp, isRestoringScroll]);
 
 
   // Use displayed chats directly (no merging needed - messages are already in channelChatData)
@@ -65,6 +66,12 @@ const Channel = (props: Props) => {
     switch (action) {
       case 'clear':
         // Clear channel messages
+        if (setChannelChatData) {
+          setChannelChatData(prev => ({
+            ...prev,
+            [channelName]: []
+          }));
+        }
         break;
       case 'join':
         // Join channel dialog
@@ -105,33 +112,146 @@ const Channel = (props: Props) => {
 
           let row: JSX.Element | null = null;
 
-          if (event === "login") {
+          if (event === "channel_header") {
+            // Parse channel header messages and style them
+            if (message.startsWith("Kanal Başlığı:")) {
+              // Format: Kanal Başlığı: WWW.YuzuK.NeT Türkiye'nin En Eski IRC Sohbet Sunucusuna Hoşgeldiniz.
+              const parts = message.split(": ");
+              const label = parts[0]; // "Kanal Başlığı"
+              const value = parts.slice(1).join(": "); // Rest of the message
+              
+              // Split value into URL and message (first word is URL, rest is message)
+              const valueParts = value.split(" ");
+              const topicUrl = valueParts[0];
+              const topicMessage = valueParts.slice(1).join(" ");
+              
+              row = (
+                <span>
+                  <span style={{ color: '#000' }}>~</span>{' '}
+                  <span style={{ color: '#313087', fontWeight: 'bold' }}>{label}:</span>{' '}
+                  <span style={{ color: '#0000ff' }}>{topicUrl}</span>{' '}
+                  <span style={{ color: '#ff0000' }}>{topicMessage}</span>
+                </span>
+              );
+            } else if (message.startsWith("Kanalın Kuruluş Tarihi")) {
+              // Format: Kanalın Kuruluş Tarihi Sun Jun 08 17:24:44 2025
+              const parts = message.split(" ");
+              const label = parts.slice(0, 3).join(" "); // "Kanalın Kuruluş Tarihi"
+              const date = parts.slice(3).join(" "); // Rest is the date
+              
+              row = (
+                <span>
+                  <span style={{ color: '#000' }}>~</span>{' '}
+                  <span style={{ color: '#313087', fontWeight: 'bold' }}>{label}</span>{' '}
+                  <span style={{ color: '#000' }}>{date}</span>
+                </span>
+              );
+            } else if (message.startsWith("Kanal Başlığını Yazan:")) {
+              // Format: Kanal Başlığını Yazan: RadyoMasteR
+              const parts = message.split(": ");
+              const label = parts[0]; // "Kanal Başlığını Yazan"
+              const value = parts.slice(1).join(": "); // Rest is the username
+              
+              row = (
+                <span>
+                  <span style={{ color: '#000' }}>~</span>{' '}
+                  <span style={{ color: '#313087', fontWeight: 'bold' }}>{label}:</span>{' '}
+                  <span style={{ color: '#000' }}>{value}</span>
+                </span>
+              );
+            } else if (message.startsWith("Kanaldaki Op Sayısı")) {
+              // Format: Kanaldaki Op Sayısı : 0 Voice Sayısı: 2 Toplam: 202 Kişi Bulunmaktadır
+              // Parse: "Kanaldaki Op Sayısı : 0 Voice Sayısı: 2 Toplam: 202 Kişi Bulunmaktadır"
+              const match = message.match(/Kanaldaki Op Sayısı\s*:\s*(\d+)\s+Voice Sayısı:\s*(\d+)\s+Toplam:\s*(\d+)\s+(.+)/);
+              
+              if (match) {
+                const [, opCount, voiceCount, totalCount, suffix] = match;
+                const label = "Kanaldaki Op Sayısı :";
+                const voiceLabel = "Voice Sayısı:";
+                const totalLabel = "Toplam:";
+                
+                row = (
+                  <span>
+                    <span style={{ color: '#000' }}>~</span>{' '}
+                    <span style={{ color: '#313087', fontWeight: 'bold' }}>{label}</span>{' '}
+                    <span style={{ color: '#000' }}>{opCount}</span>{' '}
+                    <span style={{ color: '#000' }}>{voiceLabel}</span>{' '}
+                    <span style={{ color: '#000' }}>{voiceCount}</span>{' '}
+                    <span style={{ color: '#000' }}>{totalLabel}</span>{' '}
+                    <span style={{ color: '#000' }}>{totalCount}</span>{' '}
+                    <span style={{ color: '#313087' }}>{suffix}</span>
+                  </span>
+                );
+              } else {
+                // Fallback parsing
+                const parts = message.split(" ");
+                const label = "Kanaldaki Op Sayısı :";
+                const opCount = parts[3] || "0";
+                const voiceLabel = "Voice Sayısı:";
+                const voiceCount = parts[5] || "0";
+                const totalLabel = "Toplam:";
+                const totalCount = parts[7] || "0";
+                const suffix = parts.slice(8).join(" ") || "Kişi Bulunmaktadır";
+                
+                row = (
+                  <span>
+                    <span style={{ color: '#000' }}>~</span>{' '}
+                    <span style={{ color: '#313087', fontWeight: 'bold' }}>{label}</span>{' '}
+                    <span style={{ color: '#000' }}>{opCount}</span>{' '}
+                    <span style={{ color: '#000' }}>{voiceLabel}</span>{' '}
+                    <span style={{ color: '#000' }}>{voiceCount}</span>{' '}
+                    <span style={{ color: '#000' }}>{totalLabel}</span>{' '}
+                    <span style={{ color: '#000' }}>{totalCount}</span>{' '}
+                    <span style={{ color: '#313087' }}>{suffix}</span>
+                  </span>
+                );
+              }
+            } else {
+              // Fallback for any other header format
+              row = (
+                <span style={{ color: '#000' }}>
+                  ~ {message}
+                </span>
+              );
+            }
+          } else if (event === "login") {
+            // Check if message contains "Giriş:" - this is the new format with full message
+            const isJoinMessage = message && message.includes("Giriş:");
 
-            row = (
-              <span style={{ color: "#129393" }}>
-                *** Giriş: <span
-                  style={{
-                    cursor: "pointer",
-                    textDecoration: "none",
-                    fontWeight: "normal"
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onNicknameSelect?.(user);
-                  }}
-                  onDoubleClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onNicknameClick?.(user);
-                  }}
-                  title="Click to select, double-click to open chat"
-                >
-                  {user}
-                </span> ({email}) {channel}
-              </span>
-            );
-
+            if (isJoinMessage) {
+              // Format: *** Giriş: nickname (host) #channel - match legacy login styling
+              row = (
+                <span style={{ color: "#129393" }}>
+                  {message}
+                </span>
+              );
+            } else {
+            // Legacy format: *** Giriş: user (email) channel
+              row = (
+                <span style={{ color: "#129393" }}>
+                  *** Giriş: <span
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      fontWeight: "normal"
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onNicknameSelect?.(user);
+                    }}
+                    onDoubleClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onNicknameClick?.(user);
+                    }}
+                    title="Click to select, double-click to open chat"
+                  >
+                    {user}
+                  </span> ({email}) {channel}
+                </span>
+              );
+            }
           } else if (event === "chat") {
 
             row = (
@@ -145,13 +265,18 @@ const Channel = (props: Props) => {
                     textDecoration: "none",
                     fontSize: "14px"
                   }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onNicknameSelect?.(user);
+                  }}
                   onDoubleClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('Nickname double-clicked:', user);
                     onNicknameClick?.(user);
                   }}
-                  title="Double-click to open private chat"
+                  title="Click to select in list, double-click to open chat"
                 >
                   {`<${user}>`}
                 </span>
@@ -160,13 +285,24 @@ const Channel = (props: Props) => {
             );
 
           } else if (event === "quit") {
+            // Check if message contains "Cikis:" to determine format
+            const isLeaveMessage = message && message.includes("Cikis:");
 
-            row = (
-              <span style={{ color: "#000b7d" }}>
-                *** Çıkış: {user} ({email})
-              </span>
-            );
-
+            if (isLeaveMessage) {
+              // Format: *** Cikis: nickname (host) #channel
+              row = (
+                <span style={{ color: "#0000ff" }}>
+                  {message}
+                </span>
+              );
+            } else {
+            // Legacy format: *** Çıkış: user (email)
+              row = (
+                <span style={{ color: "#000b7d" }}>
+                  *** Çıkış: {user} ({email})
+                </span>
+              );
+            }
           } else if (event === "nick_change") {
 
             row = (
@@ -182,7 +318,10 @@ const Channel = (props: Props) => {
               key={`${index}-${user}-${time}`}
               className="chat-item"
             >
-              <span className="chat-time pe-1">[{time}]</span>
+              {/* Only show timestamp for non-header messages */}
+              {event !== "channel_header" && time && (
+                <span className="chat-time pe-1">[{time}]</span>
+              )}
               {row}
             </div>
           );

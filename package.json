@@ -1,20 +1,33 @@
 {
   "name": "papatya-v7",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Papatya mIRC Script - Web Tabanlı Internet Relay Chat Client with React. Realistic mIRC client desktop application.",
+  "author": {
+    "name": "Baris Taskiran",
+    "email": ""
+  },
   "type": "module",
-"scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "serve": "vite preview",
-  "start": "serve -s dist",
-  "firebase:emulators": "firebase emulators:start",
-  "firebase:deploy": "firebase deploy",
-  "firebase:deploy:hosting": "firebase deploy --only hosting",
-  "firebase:deploy:firestore": "firebase deploy --only firestore",
-  "firebase:deploy:rules": "firebase deploy --only firestore:rules",
-  "firebase:deploy:indexes": "firebase deploy --only firestore:indexes"
-},
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "electron .",
+    "dev:full": "concurrently \"npm run dev\" \"wait-on http://localhost:10000 && electron .\"",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "serve -s dist",
+    "electron:dev": "vite build && electron .",
+    "electron:build": "vite build && electron-builder",
+    "electron:build:mac": "vite build && electron-builder --mac",
+    "electron:build:win": "vite build && electron-builder --win",
+    "electron:build:linux": "vite build && electron-builder --linux",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:deploy": "firebase deploy",
+    "firebase:deploy:hosting": "firebase deploy --only hosting",
+    "firebase:deploy:firestore": "firebase deploy --only firestore",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules",
+    "firebase:deploy:indexes": "firebase deploy --only firestore:indexes"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -38,12 +51,68 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.1",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
-    "vite": "^6.1.0"
+    "vite": "^6.1.0",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.papatya.v7",
+    "productName": "Papatya mIRC Client",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "dist/**/*"
+    ],
+    "extraFiles": [
+      {
+        "from": "public",
+        "to": "public",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "public/assets/images/app-icon.icns"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "public/assets/images/favicon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Network",
+      "icon": "public/assets/images/android-chrome-512x512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

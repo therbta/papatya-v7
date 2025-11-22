@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 export interface MenuItem {
   id: string;
-  label: string;
+  label?: string; // Optional for separator items
   shortcut?: string; // Keyboard shortcut, e.g., "Alt+L"
   onClick?: () => void;
   disabled?: boolean;

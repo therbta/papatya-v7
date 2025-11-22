@@ -44,7 +44,131 @@ const List = (props: Props) => {
     }
   }, [contextMenu.visible]);
 
+  // Track last selected index per letter for cycling through nicknames
+  const lastSelectedIndexByLetter = React.useRef<Map<string, number>>(new Map());
+
+  // Refs for each nickname item
+  const itemRefs = React.useRef<Map<number, HTMLDivElement>>(new Map());
+
+  // Store scroll positions per channel to preserve when switching
+  const scrollPositionsRef = React.useRef<Map<string, number>>(new Map());
+
+  // Track if this is the initial render for a channel (to prevent auto-scroll)
+  const isInitialRenderRef = React.useRef<Map<string, boolean>>(new Map());
+
+  // Track previous activeWindow to detect channel switches
+  const prevActiveWindowRef = React.useRef<string | null | undefined>(activeWindow);
+
+  // Reset letter index tracking when user list changes (channel switch, etc.)
+  React.useEffect(() => {
+    lastSelectedIndexByLetter.current.clear();
+
+    // Detect channel switch
+    const isChannelSwitch = prevActiveWindowRef.current !== activeWindow &&
+      activeWindow && activeWindow.startsWith('#');
+
+    if (isChannelSwitch && prevActiveWindowRef.current) {
+      // Save scroll position for previous channel
+      const listContainer = document.querySelector('.list') as HTMLElement;
+      if (listContainer && prevActiveWindowRef.current) {
+        scrollPositionsRef.current.set(prevActiveWindowRef.current, listContainer.scrollTop);
+      }
+    }
+
+    // Mark as initial render if this is a new channel or first time seeing this channel
+    if (isChannelSwitch || !isInitialRenderRef.current.has(activeWindow || '')) {
+      if (activeWindow) {
+        isInitialRenderRef.current.set(activeWindow, true);
+      }
+    }
+
+    prevActiveWindowRef.current = activeWindow;
+  }, [channelUserManagement, activeWindow]);
+
+  // Restore scroll position when switching to a channel (but not on initial selection change)
+  React.useEffect(() => {
+    if (!activeWindow || !activeWindow.startsWith('#')) return;
+
+    const isInitial = isInitialRenderRef.current.get(activeWindow);
+    if (!isInitial) {
+      // Restore saved scroll position for this channel
+      const savedScrollTop = scrollPositionsRef.current.get(activeWindow);
+      if (savedScrollTop !== undefined) {
+        setTimeout(() => {
+          const listContainer = document.querySelector('.list') as HTMLElement;
+          if (listContainer && savedScrollTop !== listContainer.scrollTop) {
+            listContainer.scrollTop = savedScrollTop;
+          }
+        }, 10);
+      }
+    } else {
+      // Mark as no longer initial render after a short delay
+      setTimeout(() => {
+        isInitialRenderRef.current.set(activeWindow, false);
+      }, 100);
+    }
+  }, [activeWindow]);
+
+  // Track previous selected to detect actual selection changes (not just re-renders)
+  const prevSelectedRef = React.useRef<number | null>(selected);
+
+  // Scroll to selected nickname when selection changes (but not on channel switch)
+  React.useEffect(() => {
+    if (selected !== null && selected >= 0) {
+      const isInitial = activeWindow ? isInitialRenderRef.current.get(activeWindow) : false;
+      const isActualSelectionChange = prevSelectedRef.current !== selected && !isInitial;
+
+      // Only scroll if this is an actual selection change (user clicked/keyboard), not initial render
+      if (isActualSelectionChange) {
+        const selectedItem = itemRefs.current.get(selected);
+
+        if (selectedItem) {
+          // Find the parent scrollable container (the .list div)
+          let scrollContainer: HTMLElement | null = selectedItem.parentElement;
+          while (scrollContainer) {
+            const style = window.getComputedStyle(scrollContainer);
+            if (style.overflow === 'auto' || style.overflow === 'scroll' ||
+              style.overflowY === 'auto' || style.overflowY === 'scroll') {
+              break;
+            }
+            scrollContainer = scrollContainer.parentElement;
+          }
+
+          // If found a scroll container, check if item is visible
+          if (scrollContainer) {
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const itemRect = selectedItem.getBoundingClientRect();
+
+            // Check if item is outside visible area
+            const isAboveViewport = itemRect.top < containerRect.top;
+            const isBelowViewport = itemRect.bottom > containerRect.bottom;
+
+            if (isAboveViewport || isBelowViewport) {
+              // Scroll the item into view smoothly
+              selectedItem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'nearest'
+              });
+            }
+          } else {
+            // Fallback: just scroll into view (will use nearest scrollable ancestor)
+            selectedItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest'
+            });
+          }
+        }
+      }
+
+      prevSelectedRef.current = selected;
+    } else {
+      prevSelectedRef.current = null;
+    }
+  }, [selected, activeWindow]);
+
   // Keyboard navigation: press a letter to select the first nickname starting with that letter
+  // Press the same letter again to cycle through all nicknames starting with that letter
   React.useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       // Only handle if the list is visible (not hidden)
@@ -75,14 +199,44 @@ const List = (props: Props) => {
         return a.nick.localeCompare(b.nick);
       });
 
-      // Find the first user whose nickname starts with the pressed letter
-      const index = sortedUsers.findIndex(user =>
-        user.nick.toLowerCase().startsWith(letter)
-      );
+      // Find all users whose nickname starts with the pressed letter
+      const matchingUsers = sortedUsers
+        .map((user, idx) => ({ user, idx }))
+        .filter(({ user }) => user.nick.toLowerCase().startsWith(letter));
 
-      if (index !== -1) {
-        setSelected(index);
-        console.log(`Selected user starting with '${letter}':`, sortedUsers[index].nick);
+      if (matchingUsers.length === 0) {
+        // No users found starting with this letter
+        lastSelectedIndexByLetter.current.delete(letter);
+        return;
+      }
+
+      // Get the last selected index for this letter
+      const lastSelectedIdx = lastSelectedIndexByLetter.current.get(letter);
+
+      let nextIndex: number;
+
+      if (lastSelectedIdx === undefined) {
+        // First time pressing this letter - select the first match
+        nextIndex = matchingUsers[0].idx;
+      } else {
+        // Find the current selection in the matching users list
+        const currentMatchIndex = matchingUsers.findIndex(({ idx }) => idx === lastSelectedIdx);
+
+        if (currentMatchIndex === -1 || currentMatchIndex === matchingUsers.length - 1) {
+          // Current selection not in matches or it's the last match - wrap to first
+          nextIndex = matchingUsers[0].idx;
+        } else {
+          // Move to next match
+          nextIndex = matchingUsers[currentMatchIndex + 1].idx;
+        }
+      }
+
+      // Update the last selected index for this letter and select the new index
+      // Safety check: ensure nextIndex is valid
+      if (nextIndex >= 0 && nextIndex < sortedUsers.length) {
+        lastSelectedIndexByLetter.current.set(letter, nextIndex);
+        setSelected(nextIndex);
+        console.log(`Selected user starting with '${letter}':`, sortedUsers[nextIndex].nick);
       }
     };
 
@@ -159,13 +313,25 @@ const List = (props: Props) => {
       {sortedNicknames.map((item, index) => {
         const { nick, op } = item;
         const color = op_colors.find((opItem) => opItem.sign === op)?.color;
+        const firstLetter = nick.toLowerCase().charAt(0);
 
         return (
           <div
             key={index}
+            ref={(el) => {
+              if (el) {
+                itemRefs.current.set(index, el);
+              } else {
+                itemRefs.current.delete(index);
+              }
+            }}
             style={{ color }}
             className={`nick-item ${selected === index ? "selected" : ""}`}
-            onClick={() => setSelected(index)}
+            onClick={() => {
+              // Update last selected index for this letter when manually clicking
+              lastSelectedIndexByLetter.current.set(firstLetter, index);
+              setSelected(index);
+            }}
             onDoubleClick={() => {
               // Open chat window for this user (it will handle adding to chatUsers)
               onOpenChatWindow && onOpenChatWindow(nick);

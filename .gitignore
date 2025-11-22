@@ -23,3 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Electron build outputs
+release/
+dist_electron/
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.AppImage
+*.zip
+*.snap
